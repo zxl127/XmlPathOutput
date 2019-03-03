@@ -19,7 +19,6 @@ Widget::Widget(QWidget *parent)
     queryLineEdit = new QLineEdit;
     queryLabel->setBuddy(queryLineEdit);
     resultTableView = new QTableView;
-//    resultTableView->verticalHeader()->hide();
     resultTableView->horizontalHeader()->setStretchLastSection(true);
     resultViewModel = new QStandardItemModel;
     setResultTable(QList<QStringList>());
