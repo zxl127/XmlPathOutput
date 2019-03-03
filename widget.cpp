@@ -27,6 +27,7 @@ Widget::Widget(QWidget *parent)
     completer = new QCompleter;
     completer->setCaseSensitivity(Qt::CaseInsensitive);
     completer->setFilterMode(Qt::MatchContains);
+    completer->setModel(resultViewModel);
     queryLineEdit->setCompleter(completer);
 
     QHBoxLayout *hLayout1 = new QHBoxLayout;
@@ -46,7 +47,18 @@ Widget::Widget(QWidget *parent)
 
     connect(openBtn, &QPushButton::clicked, this, &Widget::onOpenButtonClicked);
     connect(convertBtn, &QPushButton::clicked, this, &Widget::onConvertButtonClicked);
-    connect(queryLineEdit, &QLineEdit::editingFinished, this, &Widget::onCompleterActivated);
+    connect(queryLineEdit, &QLineEdit::returnPressed,
+            [=](){
+        if(queryLineEdit->text() == 0)
+            resultTableView->setModel(resultViewModel);
+        else
+            resultTableView->setModel(completer->completionModel());
+    });
+    connect(completer, QOverload<const QString &>::of(&QCompleter::activated),
+            [=](const QString &text){
+        completer->setCompletionPrefix(text);
+        resultTableView->setModel(completer->completionModel());
+    });
 
     xmlParser = new Tr098XmlParser;
     setMinimumWidth(resultTableView->width());
@@ -96,16 +108,6 @@ void Widget::onConvertButtonClicked()
     else
     {
         setResultTable(xmlParser->xmlAttrList());
-        QStringListModel *stringListModel = new QStringListModel;
-        stringListModel->setStringList(xmlParser->xmlPathList());
-        completer->setModel(stringListModel);
     }
     xmlParser->closeXmlDoc();
-}
-
-void Widget::onCompleterActivated()
-{
-    QStringListModel *stringListModel = qobject_cast<QStringListModel *>(completer->completionModel());
-    qDebug() << stringListModel->stringList();
-//    QStringList completerStringList = completer->
 }

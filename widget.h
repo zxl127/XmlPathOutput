@@ -23,7 +23,6 @@ public:
 private slots:
     void onOpenButtonClicked();
     void onConvertButtonClicked();
-    void onCompleterActivated();
 
 private:
     QPushButton *openBtn;
