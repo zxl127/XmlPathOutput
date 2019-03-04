@@ -5,9 +5,11 @@
 #include <QHeaderView>
 #include <QStringListModel>
 #include <QDebug>
+#include <QtXlsx>
 
 Widget::Widget(QWidget *parent)
-    : QWidget(parent)
+    : QWidget(parent),
+      mHeaderLabels(QStringList() << tr("Parameter") << tr("R/W") << tr("Inform") << tr("Description"))
 {
     setWindowTitle(tr("XML Full Path Convert Tool"));
     openBtn = new QPushButton(tr("Open"));
@@ -49,6 +51,7 @@ Widget::Widget(QWidget *parent)
 
     connect(openBtn, &QPushButton::clicked, this, &Widget::onOpenButtonClicked);
     connect(convertBtn, &QPushButton::clicked, this, &Widget::onConvertButtonClicked);
+    connect(exportBtn, &QPushButton::clicked, this, &Widget::onExportButtonClicked);
     connect(queryLineEdit, &QLineEdit::returnPressed,
             [=](){
         if(queryLineEdit->text().length() == 0)
@@ -78,9 +81,7 @@ void Widget::setResultTable(QList<QStringList> &list)
     QStringList headerLabels;
 
     resultViewModel->clear();
-    headerLabels << tr("Parameter") << tr("R/W") << tr("Inform") << tr("Description");
-    resultViewModel->setHorizontalHeaderLabels(headerLabels);
-    headerLabels.clear();
+    resultViewModel->setHorizontalHeaderLabels(mHeaderLabels);
     foreach (QStringList row, list) {
         headerLabels << QString("%1").arg(i++ + 1);
         QList<QStandardItem *> items;
@@ -120,4 +121,35 @@ void Widget::onConvertButtonClicked()
         setResultTable(xmlParser->xmlAttrList());
     }
     xmlParser->closeXmlDoc();
+}
+
+void Widget::onExportButtonClicked()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), QString("untitiled.xlsx"), tr("Microsoft Excel Workbook (*.xlsx)"));
+    if(fileName.isNull())
+        return;
+
+    QXlsx::Document xlsx;
+    QXlsx::Format format;
+    QAbstractItemModel *model = resultTableView->model();
+
+    for(int col = 1; col <= model->columnCount(); col++)
+        xlsx.write(1, col, mHeaderLabels[col - 1]);
+    for(int row = 1; row <= model->rowCount(); row++)
+    {
+        for(int col = 1; col <= model->columnCount(); col++)
+        {
+            xlsx.write(row, col, model->data(model->index(row - 1, col - 1)));
+        }
+    }
+
+    xlsx.setDocumentProperty("title", "TR069 Data Model");
+    xlsx.setDocumentProperty("subject", "");
+    xlsx.setDocumentProperty("creator", "zxl");
+    xlsx.setDocumentProperty("company", "");
+    xlsx.setDocumentProperty("category", "XML file");
+    xlsx.setDocumentProperty("keywords", "TR069");
+    xlsx.setDocumentProperty("description", "Created by XmlPathOutput Tool");
+
+    xlsx.saveAs(fileName);
 }

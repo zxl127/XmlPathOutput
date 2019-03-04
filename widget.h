@@ -23,6 +23,7 @@ public:
 private slots:
     void onOpenButtonClicked();
     void onConvertButtonClicked();
+    void onExportButtonClicked();
 
 private:
     QPushButton *openBtn;
@@ -37,6 +38,7 @@ private:
 
     QString xmlFilePath;
     Tr098XmlParser *xmlParser;
+    const QStringList mHeaderLabels;
 };
 
 #endif // WIDGET_H
