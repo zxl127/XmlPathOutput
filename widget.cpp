@@ -70,7 +70,7 @@ Widget::~Widget()
 
 void Widget::setResultTable(QList<QStringList> &list)
 {
-    int i = 0;
+    int i = 0, col = 1;
     QStringList headerLabels;
 
     resultViewModel->clear();
@@ -80,8 +80,14 @@ void Widget::setResultTable(QList<QStringList> &list)
     foreach (QStringList row, list) {
         headerLabels << QString("%1").arg(i++ + 1);
         QList<QStandardItem *> items;
-        foreach (QString text, row)
-            items.append(new QStandardItem(text));
+        col = 1;
+        foreach (QString text, row) {
+            QStandardItem *item = new QStandardItem(text);
+            if(col == 2 || col == 3)
+                item->setTextAlignment(Qt::AlignCenter);
+            items.append(item);
+            ++col;
+        }
         resultViewModel->appendRow(items);
     }
     resultViewModel->setVerticalHeaderLabels(headerLabels);
