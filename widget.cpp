@@ -106,6 +106,7 @@ void Widget::onConvertButtonClicked()
     }
     else
     {
+        xmlParser->preprocessData();
         setResultTable(xmlParser->xmlAttrList());
     }
     xmlParser->closeXmlDoc();

@@ -8,9 +8,13 @@ class Tr098XmlParser : public XmlPathParser
 {
 public:
     Tr098XmlParser();
+    void preprocessData();
 
 protected:
     QStringList otherAttr();
+
+private:
+    bool isTrueValue(const QString &str);
 };
 
 #endif // TR098XMLPARSER_H
