@@ -65,7 +65,7 @@ void XmlPathParser::closeXmlDoc()
     mModelName.clear();
 }
 
-const QList<QStringList> &XmlPathParser::xmlAttrList() const
+QList<QStringList> &XmlPathParser::xmlAttrList()
 {
     return mXmlAttrList;
 }

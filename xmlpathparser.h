@@ -15,7 +15,7 @@ public:
     bool parseXmlDoc();
     void closeXmlDoc();
 
-    const QList<QStringList> &xmlAttrList() const;
+    QList<QStringList> &xmlAttrList();
     const QStringList &xmlPathList() const;
     QString errorString() const;
     QString modelName() const;
