@@ -18,7 +18,7 @@ public:
     Widget(QWidget *parent = 0);
     ~Widget();
 
-    void setResultTable(QList<QStringList> list);
+    void setResultTable(QList<QStringList> &list);
 
 private slots:
     void onOpenButtonClicked();

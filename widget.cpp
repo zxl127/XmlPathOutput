@@ -21,7 +21,6 @@ Widget::Widget(QWidget *parent)
     resultTableView = new QTableView;
     resultTableView->horizontalHeader()->setStretchLastSection(true);
     resultViewModel = new QStandardItemModel;
-    setResultTable(QList<QStringList>());
     resultTableView->setModel(resultViewModel);
     completer = new QCompleter;
     completer->setCaseSensitivity(Qt::CaseInsensitive);
@@ -60,6 +59,7 @@ Widget::Widget(QWidget *parent)
     });
 
     xmlParser = new Tr098XmlParser;
+    setResultTable(xmlParser->xmlAttrList());
     setMinimumWidth(resultTableView->width());
 }
 
@@ -68,7 +68,7 @@ Widget::~Widget()
     delete xmlParser;
 }
 
-void Widget::setResultTable(QList<QStringList> list)
+void Widget::setResultTable(QList<QStringList> &list)
 {
     int i = 0;
     QStringList headerLabels;
