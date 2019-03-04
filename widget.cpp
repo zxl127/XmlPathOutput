@@ -47,7 +47,7 @@ Widget::Widget(QWidget *parent)
     connect(convertBtn, &QPushButton::clicked, this, &Widget::onConvertButtonClicked);
     connect(queryLineEdit, &QLineEdit::returnPressed,
             [=](){
-        if(queryLineEdit->text() == 0)
+        if(queryLineEdit->text().length() == 0)
             resultTableView->setModel(resultViewModel);
         else
             resultTableView->setModel(completer->completionModel());
