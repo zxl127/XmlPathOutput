@@ -14,6 +14,8 @@ Widget::Widget(QWidget *parent)
     openBtn->setFixedWidth(100);
     convertBtn = new QPushButton(tr("Convert"));
     convertBtn->setFixedWidth(100);
+    exportBtn = new QPushButton(tr("Export"));
+    exportBtn->setFixedWidth(100);
     xmlFileLable = new QLabel;
     queryLabel = new QLabel(tr("Query:"));
     queryLineEdit = new QLineEdit;
@@ -35,6 +37,8 @@ Widget::Widget(QWidget *parent)
     hLayout1->addWidget(convertBtn);
     hLayout1->addSpacing(20);
     hLayout1->addWidget(xmlFileLable);
+    hLayout1->addStretch();
+    hLayout1->addWidget(exportBtn);
     hLayout2->addWidget(queryLabel);
     hLayout2->addWidget(queryLineEdit);
     hLayout2->addStretch();

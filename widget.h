@@ -27,6 +27,7 @@ private slots:
 private:
     QPushButton *openBtn;
     QPushButton *convertBtn;
+    QPushButton *exportBtn;
     QLabel *xmlFileLable;
     QLabel *queryLabel;
     QLineEdit *queryLineEdit;
