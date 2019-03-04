@@ -49,7 +49,7 @@ bool XmlPathParser::parseXmlDoc()
     else
     {
         QString path;
-        mModelName = d.attribute("name");
+        mModelName = d.attribute(nameAttr());
         d = d.firstChildElement();
         parseXmlAttrAndPath(d, path);
         return true;
@@ -79,13 +79,13 @@ void XmlPathParser::parseXmlAttrAndPath(QDomElement &d, QString path)
 {
     QStringList list;
     QDomNode n = d.firstChild();
-    path.append(d.attribute("name"));
+    path.append(d.attribute(nameAttr()));
     if(!n.isNull())
         path.append(".");
     list.append(path);
-    list.append(d.attribute("rw"));
-    list.append(d.attribute("forcedInform"));
-    list.append(d.attribute("Description"));
+    foreach(QString attr, otherAttr()) {
+        list.append(d.attribute(attr));
+    }
     mXmlAttrList.append(list);
     mXmlPathList.append(path);
     while (!n.isNull()) {
@@ -125,4 +125,14 @@ QString XmlPathParser::parameterTag()
 QString XmlPathParser::descriptionTag()
 {
     return "description";
+}
+
+QString XmlPathParser::nameAttr()
+{
+    return "name";
+}
+
+QStringList XmlPathParser::otherAttr()
+{
+    return QStringList();
 }

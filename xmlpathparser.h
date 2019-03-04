@@ -25,6 +25,8 @@ protected:
     virtual QString objectTag();
     virtual QString parameterTag();
     virtual QString descriptionTag();
+    virtual QString nameAttr();
+    virtual QStringList otherAttr();
 
 private:
     void parseXmlAttrAndPath(QDomElement &d, QString path);

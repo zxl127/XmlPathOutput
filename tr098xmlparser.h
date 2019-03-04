@@ -10,7 +10,7 @@ public:
     Tr098XmlParser();
 
 protected:
-
+    QStringList otherAttr();
 };
 
 #endif // TR098XMLPARSER_H
