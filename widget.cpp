@@ -98,6 +98,7 @@ void Widget::setResultTable(QList<QStringList> &list)
         resultViewModel->appendRow(items);
     }
     resultViewModel->setVerticalHeaderLabels(headerLabels);
+    resultTableView->resizeColumnsToContents();
 }
 
 void Widget::onOpenButtonClicked()
