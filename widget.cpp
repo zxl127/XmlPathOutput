@@ -4,8 +4,10 @@
 #include <QMessageBox>
 #include <QHeaderView>
 #include <QStringListModel>
-#include <QDebug>
 #include <QtXlsx>
+#include <QDebug>
+
+QTXLSX_USE_NAMESPACE
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent),
@@ -123,26 +125,28 @@ void Widget::onConvertButtonClicked()
     xmlParser->closeXmlDoc();
 }
 
+static Format cellFormat(int fontSize, const QColor &color, Format::HorizontalAlignment align)
+{
+    Format format;
+    format.setFontSize(fontSize);
+    format.setPatternBackgroundColor(color);
+    format.setHorizontalAlignment(align);
+    format.setVerticalAlignment(Format::AlignVCenter);
+    format.setBorderStyle(Format::BorderThin);
+    return format;
+}
+
 void Widget::onExportButtonClicked()
 {
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), QString("untitiled.xlsx"), tr("Microsoft Excel Workbook (*.xlsx)"));
     if(fileName.isNull())
         return;
 
-    QXlsx::Document xlsx;
-    QXlsx::Format format;
+    Document xlsx;
+    QFontMetrics fontMetrics(resultTableView->font());
     QAbstractItemModel *model = resultTableView->model();
 
-    for(int col = 1; col <= model->columnCount(); col++)
-        xlsx.write(1, col, mHeaderLabels[col - 1]);
-    for(int row = 1; row <= model->rowCount(); row++)
-    {
-        for(int col = 1; col <= model->columnCount(); col++)
-        {
-            xlsx.write(row, col, model->data(model->index(row - 1, col - 1)));
-        }
-    }
-
+    xlsx.addSheet(QObject::tr("TR069 Data Model"));
     xlsx.setDocumentProperty("title", "TR069 Data Model");
     xlsx.setDocumentProperty("subject", "");
     xlsx.setDocumentProperty("creator", "zxl");
@@ -151,5 +155,22 @@ void Widget::onExportButtonClicked()
     xlsx.setDocumentProperty("keywords", "TR069");
     xlsx.setDocumentProperty("description", "Created by XmlPathOutput Tool");
 
+    xlsx.setRowHeight(1, 20);
+    for(int col = 1; col <= model->columnCount(); col++)
+    {
+        xlsx.setColumnWidth(col, fontMetrics.width(mHeaderLabels[col - 1]));
+        xlsx.write(1, col, mHeaderLabels[col - 1], cellFormat(16, Qt::yellow, Format::AlignHCenter));
+    }
+    for(int row = 2; row <= model->rowCount() + 1; row++)
+    {
+        xlsx.setRowHeight(row, 16);
+        for(int col = 1; col <= model->columnCount(); col++)
+        {
+            if(col == 2 || col == 3)
+                xlsx.write(row, col, model->data(model->index(row - 2, col - 1)), cellFormat(12, Qt::gray, Format::AlignHCenter));
+            else
+                xlsx.write(row, col, model->data(model->index(row - 2, col - 1)), cellFormat(12, Qt::gray, Format::AlignLeft));
+        }
+    }
     xlsx.saveAs(fileName);
 }
