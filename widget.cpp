@@ -111,7 +111,8 @@ void Widget::onOpenButtonClicked()
 {
     xmlFilePath = QFileDialog::getOpenFileName(this, tr("Open XML File"), QString("."), tr("XML files (*.xml)"));
     xmlFileLable->setText(xmlFilePath);
-    writeSettings();
+    if(!xmlFilePath.isNull())
+        writeSettings();
 }
 
 void Widget::onConvertButtonClicked()
