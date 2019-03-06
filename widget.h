@@ -26,6 +26,9 @@ private slots:
     void onExportButtonClicked();
 
 private:
+    void readSettings();
+    void writeSettings();
+
     QPushButton *openBtn;
     QPushButton *convertBtn;
     QPushButton *exportBtn;

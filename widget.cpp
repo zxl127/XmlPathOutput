@@ -73,6 +73,8 @@ Widget::Widget(QWidget *parent)
         queryNumLabel->setText(tr("Matched: %1").arg(resultTableView->model()->rowCount()));
     });
 
+    readSettings();
+    xmlFileLable->setText(xmlFilePath);
     xmlParser = new Tr098XmlParser;
     setResultTable(xmlParser->xmlAttrList());
     setMinimumWidth(resultTableView->width());
@@ -111,6 +113,7 @@ void Widget::onOpenButtonClicked()
 {
     xmlFilePath = QFileDialog::getOpenFileName(this, tr("Open XML File"), QString("."), tr("XML files (*.xml)"));
     xmlFileLable->setText(xmlFilePath);
+    writeSettings();
 }
 
 void Widget::onConvertButtonClicked()
@@ -182,4 +185,16 @@ void Widget::onExportButtonClicked()
         }
     }
     xlsx.saveAs(fileName);
+}
+
+void Widget::readSettings()
+{
+    QSettings settings("Settings.ini", QSettings::IniFormat);
+    xmlFilePath = settings.value("Path").toString();
+}
+
+void Widget::writeSettings()
+{
+    QSettings settings("Settings.ini", QSettings::IniFormat);
+    settings.setValue("Path", xmlFilePath);
 }
