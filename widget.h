@@ -8,7 +8,10 @@
 #include <QTableView>
 #include <QStandardItemModel>
 #include <QCompleter>
+#include <QtXlsx>
 #include "tr098xmlparser.h"
+
+QTXLSX_USE_NAMESPACE
 
 class Widget : public QWidget
 {
@@ -28,6 +31,8 @@ private slots:
 private:
     void readSettings();
     void writeSettings();
+    void exportExcel(const QString &fileName);
+    static Format cellFormat(int fontSize, const QColor &color, Format::HorizontalAlignment align);
 
     QPushButton *openBtn;
     QPushButton *convertBtn;

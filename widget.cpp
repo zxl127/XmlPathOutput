@@ -4,10 +4,8 @@
 #include <QMessageBox>
 #include <QHeaderView>
 #include <QStringListModel>
-#include <QtXlsx>
 #include <QDebug>
 
-QTXLSX_USE_NAMESPACE
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent),
@@ -137,23 +135,28 @@ void Widget::onConvertButtonClicked()
     xmlParser->closeXmlDoc();
 }
 
-static Format cellFormat(int fontSize, const QColor &color, Format::HorizontalAlignment align)
-{
-    Format format;
-    format.setFontSize(fontSize);
-    format.setPatternBackgroundColor(color);
-    format.setHorizontalAlignment(align);
-    format.setVerticalAlignment(Format::AlignVCenter);
-    format.setBorderStyle(Format::BorderThin);
-    return format;
-}
-
 void Widget::onExportButtonClicked()
 {
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), QString("untitiled.xlsx"), tr("Microsoft Excel Workbook (*.xlsx)"));
     if(fileName.isNull())
         return;
+    exportExcel(fileName);
+}
 
+void Widget::readSettings()
+{
+    QSettings settings("Settings.ini", QSettings::IniFormat);
+    xmlFilePath = settings.value("Path").toString();
+}
+
+void Widget::writeSettings()
+{
+    QSettings settings("Settings.ini", QSettings::IniFormat);
+    settings.setValue("Path", xmlFilePath);
+}
+
+void Widget::exportExcel(const QString &fileName)
+{
     Document xlsx;
     QFontMetrics fontMetrics(resultTableView->font());
     QAbstractItemModel *model = resultTableView->model();
@@ -187,14 +190,13 @@ void Widget::onExportButtonClicked()
     xlsx.saveAs(fileName);
 }
 
-void Widget::readSettings()
+Format Widget::cellFormat(int fontSize, const QColor &color, Format::HorizontalAlignment align)
 {
-    QSettings settings("Settings.ini", QSettings::IniFormat);
-    xmlFilePath = settings.value("Path").toString();
-}
-
-void Widget::writeSettings()
-{
-    QSettings settings("Settings.ini", QSettings::IniFormat);
-    settings.setValue("Path", xmlFilePath);
+    Format format;
+    format.setFontSize(fontSize);
+    format.setPatternBackgroundColor(color);
+    format.setHorizontalAlignment(align);
+    format.setVerticalAlignment(Format::AlignVCenter);
+    format.setBorderStyle(Format::BorderThin);
+    return format;
 }
