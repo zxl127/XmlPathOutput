@@ -1,5 +1,13 @@
 #include "tr098xmlparser.h"
 
+static bool isTrueValue(const QString &str)
+{
+    if(str == QString("1") || str.compare(QString("true"), Qt::CaseInsensitive) == 0)
+        return true;
+    else
+        return false;
+}
+
 Tr098XmlParser::Tr098XmlParser()
 {
 
@@ -19,14 +27,6 @@ void Tr098XmlParser::preprocessData()
         else
             list[i][2] = "";
     }
-}
-
-bool Tr098XmlParser::isTrueValue(const QString &str)
-{
-    if(str == QString("1") || str.compare(QString("true"), Qt::CaseInsensitive) == 0)
-        return true;
-    else
-        return false;
 }
 
 QStringList Tr098XmlParser::otherAttr()

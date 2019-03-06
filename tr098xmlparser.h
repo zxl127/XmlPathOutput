@@ -12,9 +12,6 @@ public:
 
 protected:
     QStringList otherAttr();
-
-private:
-    bool isTrueValue(const QString &str);
 };
 
 #endif // TR098XMLPARSER_H
