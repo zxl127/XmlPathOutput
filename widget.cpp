@@ -109,7 +109,7 @@ void Widget::setResultTable(QList<QStringList> &list)
 
 void Widget::onOpenButtonClicked()
 {
-    xmlFilePath = QFileDialog::getOpenFileName(this, tr("Open XML File"), QString("."), tr("XML files (*.xml)"));
+    xmlFilePath = QFileDialog::getOpenFileName(this, tr("Open XML File"), xmlFilePath, tr("XML files (*.xml)"));
     xmlFileLable->setText(xmlFilePath);
     if(!xmlFilePath.isNull())
         writeSettings();
