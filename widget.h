@@ -31,6 +31,8 @@ private:
     QPushButton *exportBtn;
     QLabel *xmlFileLable;
     QLabel *queryLabel;
+    QLabel *queryNumLabel;
+    QLabel *modelNameLabel;
     QLineEdit *queryLineEdit;
     QCompleter *completer;
     QTableView *resultTableView;

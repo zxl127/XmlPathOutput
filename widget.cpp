@@ -24,6 +24,8 @@ Widget::Widget(QWidget *parent)
     queryLabel = new QLabel(tr("Query:"));
     queryLineEdit = new QLineEdit;
     queryLabel->setBuddy(queryLineEdit);
+    queryNumLabel = new QLabel;
+    modelNameLabel = new QLabel;
     resultTableView = new QTableView;
     resultTableView->horizontalHeader()->setStretchLastSection(true);
     resultViewModel = new QStandardItemModel;
@@ -45,7 +47,9 @@ Widget::Widget(QWidget *parent)
     hLayout1->addWidget(exportBtn);
     hLayout2->addWidget(queryLabel);
     hLayout2->addWidget(queryLineEdit);
+    hLayout2->addWidget(queryNumLabel);
     hLayout2->addStretch();
+    hLayout2->addWidget(modelNameLabel);
     vLayout->addLayout(hLayout1);
     vLayout->addLayout(hLayout2);
     vLayout->addWidget(resultTableView);
@@ -60,11 +64,13 @@ Widget::Widget(QWidget *parent)
             resultTableView->setModel(resultViewModel);
         else
             resultTableView->setModel(completer->completionModel());
+        queryNumLabel->setText(tr("Matched: %1").arg(resultTableView->model()->rowCount()));
     });
     connect(completer, QOverload<const QString &>::of(&QCompleter::activated),
             [=](const QString &text){
         completer->setCompletionPrefix(text);
         resultTableView->setModel(completer->completionModel());
+        queryNumLabel->setText(tr("Matched: %1").arg(resultTableView->model()->rowCount()));
     });
 
     xmlParser = new Tr098XmlParser;
@@ -122,6 +128,8 @@ void Widget::onConvertButtonClicked()
     {
         xmlParser->preprocessData();
         setResultTable(xmlParser->xmlAttrList());
+        modelNameLabel->setText(tr("Data Model: %1").arg(xmlParser->modelName()));
+        queryNumLabel->setText(tr("Matched: %1").arg(resultTableView->model()->rowCount()));
     }
     xmlParser->closeXmlDoc();
 }
