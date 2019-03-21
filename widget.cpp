@@ -137,8 +137,6 @@ void Widget::onOpenButtonClicked()
 {
     xmlFilePath = QFileDialog::getOpenFileName(this, tr("Open XML File"), xmlFilePath, tr("XML files (*.xml)"));
     xmlFileLable->setText(xmlFilePath);
-    if(!xmlFilePath.isNull())
-        writeSettings();
 }
 
 void Widget::startConvertXml()
@@ -158,6 +156,7 @@ void Widget::startConvertXml()
         setResultTable(xmlParser->xmlAttrList());
         modelNameLabel->setText(tr("Data Model: %1").arg(xmlParser->modelName()));
         queryNumLabel->setText(tr("Matched: %1").arg(resultTableView->model()->rowCount()));
+        writeSettings();
     }
     xmlParser->closeXmlDoc();
 }
