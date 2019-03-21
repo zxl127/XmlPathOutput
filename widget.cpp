@@ -6,6 +6,7 @@
 #include <QStringListModel>
 #include <QApplication>
 #include <QClipboard>
+#include <QTimer>
 #include <QDebug>
 
 
@@ -64,7 +65,7 @@ Widget::Widget(QWidget *parent)
     setLayout(vLayout);
 
     connect(openBtn, &QPushButton::clicked, this, &Widget::onOpenButtonClicked);
-    connect(convertBtn, &QPushButton::clicked, this, &Widget::onConvertButtonClicked);
+    connect(convertBtn, &QPushButton::clicked, this, &Widget::startConvertXml);
     connect(exportBtn, &QPushButton::clicked, this, &Widget::onExportButtonClicked);
     connect(queryLineEdit, &QLineEdit::returnPressed,
             [=](){
@@ -81,11 +82,11 @@ Widget::Widget(QWidget *parent)
         queryNumLabel->setText(tr("Matched: %1").arg(resultTableView->model()->rowCount()));
     });
 
-    readSettings();
-    xmlFileLable->setText(xmlFilePath);
     xmlParser = new Tr098XmlParser;
     setResultTable(xmlParser->xmlAttrList());
     setMinimumWidth(resultTableView->width());
+
+    QTimer::singleShot(0, this, &Widget::loadDelay);
 }
 
 Widget::~Widget()
@@ -140,7 +141,7 @@ void Widget::onOpenButtonClicked()
         writeSettings();
 }
 
-void Widget::onConvertButtonClicked()
+void Widget::startConvertXml()
 {
     if(!xmlParser->openXmlDoc(xmlFilePath))
     {
@@ -167,6 +168,23 @@ void Widget::onExportButtonClicked()
     if(fileName.isNull())
         return;
     exportExcel(fileName);
+}
+
+void Widget::loadDelay()
+{
+    QStringList args = QApplication::arguments();
+    if(args.size() >= 2)
+    {
+        xmlFilePath = args[1];
+        if(xmlFilePath.endsWith(".xml")) {
+            startConvertXml();
+        } else {
+            QMessageBox::warning(this, tr("Warning"), tr("Please open xml file"));
+        }
+    }
+    else
+        readSettings();
+    xmlFileLable->setText(xmlFilePath);
 }
 
 void Widget::readSettings()

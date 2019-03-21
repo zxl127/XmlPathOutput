@@ -26,9 +26,10 @@ public:
 
 private slots:
     void copy();
+    void startConvertXml();
     void onOpenButtonClicked();
-    void onConvertButtonClicked();
     void onExportButtonClicked();
+    void loadDelay();
 
 private:
     void readSettings();
