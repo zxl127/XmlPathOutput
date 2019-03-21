@@ -175,11 +175,7 @@ void Widget::loadDelay()
     if(args.size() >= 2)
     {
         xmlFilePath = args[1];
-        if(xmlFilePath.endsWith(".xml")) {
-            startConvertXml();
-        } else {
-            QMessageBox::warning(this, tr("Warning"), tr("Please open xml file"));
-        }
+        startConvertXml();
     }
     else
         readSettings();
