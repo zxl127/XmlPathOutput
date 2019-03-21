@@ -4,6 +4,8 @@
 #include <QMessageBox>
 #include <QHeaderView>
 #include <QStringListModel>
+#include <QApplication>
+#include <QClipboard>
 #include <QDebug>
 
 
@@ -28,11 +30,19 @@ Widget::Widget(QWidget *parent)
     resultTableView->horizontalHeader()->setStretchLastSection(true);
     resultViewModel = new QStandardItemModel;
     resultTableView->setModel(resultViewModel);
+    resultTableView->setSelectionMode(QTableView::ContiguousSelection);
     completer = new QCompleter;
     completer->setCaseSensitivity(Qt::CaseInsensitive);
     completer->setFilterMode(Qt::MatchContains);
     completer->setModel(resultViewModel);
     queryLineEdit->setCompleter(completer);
+
+    copyAction = new QAction(tr("&Copy"), this);
+    copyAction->setShortcut(QKeySequence::Copy);
+    copyAction->setStatusTip(tr("Copy the current selection's contents to the clipboard"));
+    connect(copyAction, &QAction::triggered, this, &Widget::copy);
+    resultTableView->addAction(copyAction);
+    resultTableView->setContextMenuPolicy(Qt::ActionsContextMenu);
 
     QHBoxLayout *hLayout1 = new QHBoxLayout;
     QHBoxLayout *hLayout2 = new QHBoxLayout;
@@ -105,6 +115,21 @@ void Widget::setResultTable(QList<QStringList> &list)
     }
     resultViewModel->setVerticalHeaderLabels(headerLabels);
     resultTableView->resizeColumnsToContents();
+}
+
+void Widget::copy()
+{
+    QString str;
+    QModelIndexList modelIndexList = resultTableView->selectionModel()->selectedIndexes();
+    int lastCol = modelIndexList.last().column();
+    foreach (QModelIndex index, modelIndexList) {
+        str += index.data(Qt::EditRole).toString();
+        if(index.column() == lastCol)
+            str += "\n";
+        else
+            str += "\t";
+    }
+    QApplication::clipboard()->setText(str);
 }
 
 void Widget::onOpenButtonClicked()

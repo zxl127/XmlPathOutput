@@ -5,6 +5,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QLineEdit>
+#include <QAction>
 #include <QTableView>
 #include <QStandardItemModel>
 #include <QCompleter>
@@ -24,6 +25,7 @@ public:
     void setResultTable(QList<QStringList> &list);
 
 private slots:
+    void copy();
     void onOpenButtonClicked();
     void onConvertButtonClicked();
     void onExportButtonClicked();
@@ -45,6 +47,7 @@ private:
     QCompleter *completer;
     QTableView *resultTableView;
     QStandardItemModel *resultViewModel;
+    QAction *copyAction;
 
     QString xmlFilePath;
     Tr098XmlParser *xmlParser;
